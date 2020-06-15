@@ -10,8 +10,10 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var gameTimer = GameTimer {
+    private let gameTimer = GameTimer {
         print("playign random chord")
+        let asset = NSDataAsset(name: "A-major")
+        print(asset)
     }
     
     var body: some View {
