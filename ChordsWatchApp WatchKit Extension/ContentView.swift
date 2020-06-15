@@ -12,8 +12,6 @@ struct ContentView: View {
     
     private let gameTimer = GameTimer {
         print("playign random chord")
-        let asset = NSDataAsset(name: "A-major")
-        print(asset)
     }
     
     var body: some View {
