@@ -10,9 +10,9 @@ import SwiftUI
 
 struct ContentView: View {
     
-    let timer = Timer
-        .publish(every: 1.0, on: .main, in: .common)
-        .autoconnect()
+    @State var gameTimer = GameTimer {
+        print("playign random chord")
+    }
     
     var body: some View {
         VStack(alignment: .center) {
@@ -30,6 +30,8 @@ struct ContentView: View {
                     Text("Minor")
                 })
             }
+        }.onAppear {
+            self.gameTimer.start()
         }
     }
 }
@@ -37,5 +39,39 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+class GameTimer {
+    
+    typealias Started = () -> Void
+    private var timer: Timer?
+    private var started: Started?
+    private var counter = 0
+    private static let max = 5
+    
+    init(onStarted: Started?) {
+        self.started = onStarted
+    }
+    
+    func start() {
+        stop()
+        started?()
+        timer = Timer.scheduledTimer(
+            withTimeInterval: 1.0,
+            repeats: true,
+            block: { [weak self] _ in
+                guard let self = self else { return }
+                self.counter += 1
+                if self.counter >= GameTimer.max {
+                    self.counter = 0
+                    self.started?()
+                }
+            }
+        )
+    }
+    
+    func stop() {
+        timer?.invalidate()
     }
 }
