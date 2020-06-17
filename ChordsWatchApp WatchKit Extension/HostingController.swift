@@ -11,6 +11,10 @@ import Foundation
 import SwiftUI
 
 class HostingController: WKHostingController<ContentView> {
+    override init() {
+        super.init()
+        Chord.setupAudioSession()
+    }
     override var body: ContentView {
         return ContentView()
     }

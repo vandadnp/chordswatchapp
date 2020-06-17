@@ -7,17 +7,30 @@
 //
 
 import UIKit
+import AVFoundation
 
-struct Chord {
+class Chord {
+    
+    static func setupAudioSession() {
+        let session = AVAudioSession.sharedInstance()
+        try? session.setCategory(
+            .playback,
+            mode: .default,
+            policy: .default,
+            options: []
+        )
+    }
     
     enum ChordType {
         case major, minor
     }
     
-    private let data: Data
     let chordType: ChordType
     
     var isMajor: Bool { chordType == .major }
+    
+    private var player: AVAudioPlayer?
+    private let data: Data
     
     init?(resName: String, chordType: ChordType) {
         if let data = NSDataAsset(name: resName)?.data {
@@ -27,6 +40,18 @@ struct Chord {
             return nil
         }
     }
+    
+    func play() {
+        stop()
+        player = try? AVAudioPlayer(data: data)
+        player?.play()
+    }
+    
+    func stop() {
+        player?.stop()
+    }
+    
+    static let allChords: [Chord] = chords
 }
 
 private let chords: [Chord] = [
