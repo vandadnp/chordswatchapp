@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     
@@ -19,38 +20,62 @@ struct ContentView: View {
         currentChord?.play()
     }
     
+    private func restartTimer(afterSeconds: Int = 1) {
+        DispatchQueue.main.asyncAfter(
+            deadline: DispatchTime.now() + .seconds(afterSeconds),
+            execute: {
+                self.answerText = "🔊"
+                self.playRandomChord()
+            }
+        )
+    }
+    
     private func processAnswer(chordType: Chord.ChordType) {
+        gameTimer?.stop()
         guard let currentChord = currentChord else { return }
         if currentChord.chordType == chordType {
             //correct answer
+            answerText = "✅"
         } else {
-            //incorrect answer
+            answerText = "❌"
         }
+        restartTimer()
     }
+    
+    @State var answerText = "🔊"
     
     var body: some View {
         VStack(alignment: .center) {
-            Text("🔊")
+            
+            Spacer()
+            
+            Text(answerText)
                 .font(.largeTitle)
             
+            Spacer()
+            
             HStack(alignment: .center, spacing: 2.0) {
-                Button(action: {
-                    self.processAnswer(chordType: .major)
-                }, label: {
-                    Text("Major")
-                })
                 Button(action: {
                     self.processAnswer(chordType: .minor)
                 }, label: {
                     Text("Minor")
                 })
+                Button(action: {
+                    self.processAnswer(chordType: .major)
+                }, label: {
+                    Text("Major")
+                })
             }
         }
-        .onAppear {
+        .onReceive(NotificationCenter.default.publisher(for: .NSExtensionHostDidBecomeActive), perform: { _ in
             self.gameTimer = GameTimer(onStarted: {
                 self.playRandomChord()
             })
-        }
+        })
+        .onReceive(NotificationCenter.default.publisher(for: .NSExtensionHostDidEnterBackground), perform: { _ in
+            self.currentChord?.stop()
+            self.gameTimer?.stop()
+        })
     }
 }
 
