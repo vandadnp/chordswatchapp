@@ -44,6 +44,13 @@ struct ContentView: View {
     
     @State var answerText = "🔊"
     
+    private func setupTimer() {
+        self.gameTimer?.stop()
+        self.gameTimer = GameTimer(onStarted: {
+            self.playRandomChord()
+        })
+    }
+    
     var body: some View {
         VStack(alignment: .center) {
             
@@ -68,14 +75,15 @@ struct ContentView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .NSExtensionHostDidBecomeActive), perform: { _ in
-            self.gameTimer = GameTimer(onStarted: {
-                self.playRandomChord()
-            })
+            self.setupTimer()
         })
         .onReceive(NotificationCenter.default.publisher(for: .NSExtensionHostDidEnterBackground), perform: { _ in
             self.currentChord?.stop()
             self.gameTimer?.stop()
         })
+        .onAppear {
+            self.setupTimer()
+        }
     }
 }
 
