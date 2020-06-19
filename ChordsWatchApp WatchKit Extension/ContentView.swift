@@ -35,12 +35,12 @@ struct ContentView: View {
             
             HStack(alignment: .center, spacing: 2.0) {
                 Button(action: {
-                    self.playRandomChord()
+                    self.processAnswer(chordType: .major)
                 }, label: {
                     Text("Major")
                 })
                 Button(action: {
-                    print("Minor")
+                    self.processAnswer(chordType: .minor)
                 }, label: {
                     Text("Minor")
                 })
