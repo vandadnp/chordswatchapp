@@ -11,7 +11,6 @@ import SwiftUI
 struct ContentView: View {
     
     @State var gameTimer: GameTimer?
-    
     @State var currentChord: Chord?
     
     private func playRandomChord() {
@@ -46,7 +45,8 @@ struct ContentView: View {
                     Text("Minor")
                 })
             }
-        }.onAppear {
+        }
+        .onAppear {
             self.gameTimer = GameTimer(onStarted: {
                 self.playRandomChord()
             })
