@@ -25,7 +25,7 @@ struct ContentView: View {
             deadline: DispatchTime.now() + .seconds(afterSeconds),
             execute: {
                 self.answerText = "🔊"
-                self.playRandomChord()
+                self.setupTimer()
             }
         )
     }
